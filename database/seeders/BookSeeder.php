@@ -12,7 +12,8 @@ class BookSeeder extends Seeder
      */
     public function run(): void
     {
-        $books = [
+        $books =
+            [
             [
                 'title' => 'The Power of Positive Thinking',
                 'author' => 'Norman Vincent Peale',
@@ -77,8 +78,6 @@ class BookSeeder extends Seeder
                 'updated_at' => now(),
             ],
         ];
-
-        // Insert books into the books table
         DB::table('books')->insert($books);
     }
 }

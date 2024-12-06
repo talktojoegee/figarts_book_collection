@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\BookRequest;
+use App\Http\Resources\BookResource;
 use App\Models\Book;
 use Illuminate\Http\Request;
 
@@ -12,8 +13,10 @@ class BookController extends Controller
      * Display a listing of the resource.
      */
     public function index()
-    {
-        //
+    {   $books = BookResource::collection(Book::findAllBooks());
+        return inertia('Books/index',[
+            'books'=>$books
+        ]);
     }
 
     /**

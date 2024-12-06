@@ -19,7 +19,7 @@ class Book extends Model
 
 
 
-    public static function findAllBooks():Book {
+    public static function findAllBooks() {
         return Book::orderBy('title', 'ASC')->get();
     }
 
