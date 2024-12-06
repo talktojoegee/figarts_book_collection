@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('author');
             $table->text('description');
             $table->integer('published_year');
-            $table->string('status')->comment('available, borrowed, reserved');
+            $table->string('status')->default('available')->comment('available, borrowed, reserved');
             $table->timestamps();
         });
     }
