@@ -1,12 +1,25 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
+import { Link } from "@inertiajs/vue3";
+import { useForm } from "@inertiajs/vue3";
+
 defineProps({
     books: {
         type: Array,
         required: true,
     },
 });
+const form = useForm({});
+
+
+const deleteBook = (id) => {
+    if (confirm('Are you sure you want to delete this book?')) {
+        form.delete(route('books.destroy',id), {
+            onSuccess: () => alert('Book deleted successfully!'),
+        });
+    }
+};
 </script>
 <template>
     <Head title="Dashboard" />
@@ -26,13 +39,16 @@ defineProps({
                     class="overflow-hidden bg-white shadow-sm sm:rounded-lg p-3"
                 >
                     <div class="flex justify-end items-center mb-6">
-                        <button
-                            @click="addBook"
+                        <Link
+                            :href="route('books.create')"
+                            :active="route().current('books.index')"
                             class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md shadow-md focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75"
                         >
                             Add New Book
-                        </button>
+                        </Link>
                     </div>
+
+
 
                     <table class="min-w-full table-auto border-collapse border border-gray-200">
                         <thead>
@@ -67,15 +83,21 @@ defineProps({
               </span>
                             </td>
                             <td class="border border-gray-300 px-4 py-2 text-center">
-                                <button
-                                    class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 mr-2"
-                                    @click="editBook(book.id)"
+                                <Link
+                                    :href="`/books/${book.id}`"
+                                    class="text-blue-500 hover:underline"
+                                >
+                                    View
+                                </Link>
+                                <Link
+                                    :href="route('books.edit',book.id)"
+                                    class="text-green-500 hover:underline"
                                 >
                                     Edit
-                                </button>
+                                </Link>
                                 <button
-                                    class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
                                     @click="deleteBook(book.id)"
+                                    class="text-red-500 hover:underline"
                                 >
                                     Delete
                                 </button>

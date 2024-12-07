@@ -20,7 +20,7 @@ class Book extends Model
 
 
     public static function findAllBooks() {
-        return Book::orderBy('title', 'ASC')->get();
+        return Book::orderBy('title', 'ASC')->paginate(20);
     }
 
 

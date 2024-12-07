@@ -11,7 +11,7 @@ class BookRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return auth()->check();
     }
 
     /**
@@ -27,11 +27,8 @@ class BookRequest extends FormRequest
             'description' => 'required|string',
             'published_year' => 'required|digits:4|integer|min:1000|max:' . date('Y'),
         ];
-        if ($this->isMethod('put') || $this->isMethod('patch')) {
-
-            $rules['id'] = 'required|exists:books,id';
-        }
         return $rules;
 
     }
+
 }

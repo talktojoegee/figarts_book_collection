@@ -6,6 +6,7 @@ use App\Http\Requests\BookRequest;
 use App\Http\Resources\BookResource;
 use App\Models\Book;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class BookController extends Controller
 {
@@ -24,7 +25,7 @@ class BookController extends Controller
      */
     public function create()
     {
-        //
+        return \inertia("Books/create");
     }
 
     /**
@@ -32,9 +33,10 @@ class BookController extends Controller
      */
     public function store(BookRequest $request)
     {
+
         $validated = $request->validated();
         Book::create($validated);
-        return response()->json(['message' => "Success! New book added to the system."]);
+        return redirect()->route("books.index");
     }
 
     /**
@@ -48,24 +50,28 @@ class BookController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Book $book)
     {
-        //
+        return \inertia("Books/edit",[
+            'book'=> BookResource::make($book)]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(BookRequest $request, Book $book)
     {
-        //
+        $book->update($request->validated());
+        return redirect()->route("books.index");
+        //return redirect()->route('books.index')->with('success', 'Book updated successfully!');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Book  $book)
     {
-        //
+        $book->delete();
+        return redirect()->route('books.index')->with('success', 'Action successful!');
     }
 }
