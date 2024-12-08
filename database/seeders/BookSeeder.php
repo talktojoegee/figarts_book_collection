@@ -77,7 +77,41 @@ class BookSeeder extends Seeder
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
+                [
+                    'title' => 'Atomic Habits',
+                    'author' => 'James Clear',
+                    'description' => 'A guide to building good habits and breaking bad ones using actionable strategies backed by science.',
+                    'published_year' => 2018,
+                ],
+                [
+                    'title' => 'Deep Work',
+                    'author' => 'Cal Newport',
+                    'description' => 'An exploration of how to focus deeply in a distracted world and produce meaningful work.',
+                    'published_year' => 2016,
+                ],
+                [
+                    'title' => 'Grit: The Power of Passion and Perseverance',
+                    'author' => 'Angela Duckworth',
+                    'description' => 'A psychological study of the importance of passion and perseverance in achieving success.',
+                    'published_year' => 2016,
+                ],
+                [
+                    'title' => 'Start With Why',
+                    'author' => 'Simon Sinek',
+                    'description' => 'A book that delves into the importance of finding your "why" and how it can inspire leadership and success.',
+                    'published_year' => 2009,
+                ],
+                [
+                    'title' => 'Sapiens: A Brief History of Humankind',
+                    'author' => 'Yuval Noah Harari',
+                    'description' => 'A thought-provoking journey through the history of human evolution, culture, and society.',
+                    'published_year' => 2011,
+                ],
         ];
+
+
+
+
         DB::table('books')->insert($books);
     }
 }

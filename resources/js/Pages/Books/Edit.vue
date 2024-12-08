@@ -20,7 +20,6 @@ const form = useForm({
     published_year: bookHandler.published_year,
 });
 
-//const errors = ref({});
 
 const updateBook = () => {
     form.put(route("books.update", bookHandler?.id));

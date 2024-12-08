@@ -21,7 +21,8 @@ import { Head } from '@inertiajs/vue3';
                     class="overflow-hidden bg-white shadow-sm sm:rounded-lg"
                 >
                     <div class="p-6 text-gray-900">
-                        You're logged in!
+                        Welcome to <strong>Figarts Book Collection!</strong>
+                        <p>Kindly navigate to the books sections to manage them.</p>
                     </div>
                 </div>
             </div>

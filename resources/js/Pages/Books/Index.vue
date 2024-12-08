@@ -1,8 +1,10 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head } from '@inertiajs/vue3';
+import {Head, router, usePage} from '@inertiajs/vue3';
 import { Link } from "@inertiajs/vue3";
 import { useForm } from "@inertiajs/vue3";
+import {computed, ref, watch} from "vue";
+import Pagination from "@/Components/Pagination.vue";
 
 defineProps({
     books: {
@@ -11,7 +13,39 @@ defineProps({
     },
 });
 const form = useForm({});
+const { flash } = usePage().props;
 
+let pageNumber = ref(1),
+    searchTerm = ref(usePage().props.search ?? "");
+
+const pageNumberUpdated = (link) => {
+    pageNumber.value = link.url.split("=")[1];
+};
+
+let booksUrl = computed(() => {
+    const url = new URL(route("books.index"));
+
+    url.searchParams.set("page", pageNumber.value);
+
+    if (searchTerm.value) {
+        url.searchParams.set("search", searchTerm.value);
+    }
+    return url;
+});
+
+watch(
+    () => booksUrl.value,
+    (updateUrl) => {
+        router.visit(updateUrl,{
+            preserveScroll: true,
+            preserveState: true,
+            replace: true,
+        });
+       /* if (updateUrl) {
+            pageNumber.value = 1;
+        }*/
+    }
+);
 
 const deleteBook = (id) => {
     if (confirm('Are you sure you want to delete this book?')) {
@@ -38,6 +72,13 @@ const deleteBook = (id) => {
                 <div
                     class="overflow-hidden bg-white shadow-sm sm:rounded-lg p-3"
                 >
+                    <input
+                        type="text"
+                        v-model="searchTerm"
+                        placeholder="Search book records"
+                        id="search"
+                        class="block rounded-lg border-0 py-2 pl-10 text-gray-900 ring-1 ring-inset ring-gray-200 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    />
                     <div class="flex justify-end items-center mb-6">
                         <Link
                             :href="route('books.create')"
@@ -49,6 +90,23 @@ const deleteBook = (id) => {
                     </div>
 
 
+                    <div>
+                        <!-- Success Alert -->
+                        <div
+                            v-if="flash.success"
+                            class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4"
+                        >
+                            {{ flash.success }}
+                        </div>
+
+                        <!-- Error Alert -->
+                        <div
+                            v-if="flash.error"
+                            class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4"
+                        >
+                            {{ flash.error }}
+                        </div>
+                    </div>
 
                     <table class="min-w-full table-auto border-collapse border border-gray-200">
                         <thead>
@@ -84,7 +142,7 @@ const deleteBook = (id) => {
                             </td>
                             <td class="border border-gray-300 px-4 py-2 text-center">
                                 <Link
-                                    :href="`/books/${book.id}`"
+                                    :href="route('books.show',book.id)"
                                     class="text-blue-500 hover:underline"
                                 >
                                     View
@@ -113,6 +171,10 @@ const deleteBook = (id) => {
                         </tr>
                         </tbody>
                     </table>
+                    <Pagination
+                        :data="books"
+                        :pageNumberUpdated="pageNumberUpdated"
+                    />
                 </div>
             </div>
         </div>

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\BookRequest;
 use App\Http\Resources\BookResource;
 use App\Models\Book;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -13,9 +14,15 @@ class BookController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
-    {   $books = BookResource::collection(Book::findAllBooks());
-        return inertia('Books/index',[
+    public function index(Request $request)
+    {
+        $bookQuery = Book::query();
+        $this->searchBooks($bookQuery, $request->search);
+
+        $books = BookResource::collection(
+            $bookQuery->paginate(10)
+        );
+        return inertia('Books/Index',[
             'books'=>$books
         ]);
     }
@@ -25,7 +32,7 @@ class BookController extends Controller
      */
     public function create()
     {
-        return \inertia("Books/create");
+        return \inertia("Books/Create");
     }
 
     /**
@@ -36,15 +43,18 @@ class BookController extends Controller
 
         $validated = $request->validated();
         Book::create($validated);
-        return redirect()->route("books.index");
+        return redirect()->route("books.index")->with('success', 'Book saved.');;
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show($id)
     {
-        //
+        $book = Book::findOrFail($id);
+        return \inertia("Books/Show",[
+            'book'=> $book
+        ]);
     }
 
     /**
@@ -52,7 +62,7 @@ class BookController extends Controller
      */
     public function edit(Book $book)
     {
-        return \inertia("Books/edit",[
+        return \inertia("Books/Edit",[
             'book'=> BookResource::make($book)]);
     }
 
@@ -62,8 +72,8 @@ class BookController extends Controller
     public function update(BookRequest $request, Book $book)
     {
         $book->update($request->validated());
-        return redirect()->route("books.index");
-        //return redirect()->route('books.index')->with('success', 'Book updated successfully!');
+
+        return redirect()->route('books.index')->with('success', 'Your changes were saved.');
     }
 
     /**
@@ -73,5 +83,13 @@ class BookController extends Controller
     {
         $book->delete();
         return redirect()->route('books.index')->with('success', 'Action successful!');
+    }
+
+    protected function searchBooks(Builder $query, $search)
+    {
+        return $query->when($search, function ($query, $search) {
+            $query->where('title', 'like', '%' . $search . '%')
+            ->orWhere('status', 'like', '%' . $search . '%');
+        });
     }
 }
